@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	name: "The Atomic Tree",
+	id: "atomictree",
+	author: "cornucanis",
+	pointsName: "aether",
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
@@ -13,13 +13,13 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.0",
-	name: "Literally nothing",
+	name: "Genesis",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		- Initial commit.<br>
+		- Added energy layer (not yet fully balanced.)`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -33,7 +33,9 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	let gen = false;
+	if (hasEUpg(11)) gen = getEEff(11);
+	return gen;
 }
 
 // Calculate points/sec!
@@ -42,6 +44,11 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	
+	if (hasEUpg(12)) gain = gain.mul(getEEff(12));
+	if (hasEUpg(13)) gain = gain.mul(getEEff(13));
+	if (hasEUpg(21)) gain = gain.mul(getEEff(21));
+	if (hasEUpg(23)) gain = gain.mul(getEEff(23));
 	return gain
 }
 
