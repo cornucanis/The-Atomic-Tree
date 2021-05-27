@@ -49,7 +49,7 @@ addLayer("e", {
 			cost: new Decimal(2),
 			effect() {
 				let eff = player.e.points.add(2);
-				eff = eff.pow(1/2);
+				eff = eff.pow(5/12);
 				return eff;
 			},
 			effectDisplay() {
@@ -96,7 +96,7 @@ addLayer("e", {
 			cost: new Decimal(100),
 			effect() {
 				let eff = player.points.add(2);
-				eff = eff.pow(1/5);
+				eff = eff.log10().add(1).pow(1.5);
 				return eff;
 			},
 			effectDisplay() {
@@ -124,7 +124,7 @@ addLayer("e", {
 		},
 		23: {
 			description: "Double aether gain for each purchased energy upgrade",
-			cost: new Decimal(2500),
+			cost: new Decimal(1000),
 			effect() {
 				let eff = player.e.upgrades.length;
 				eff = Math.pow(2,eff)
@@ -143,7 +143,7 @@ addLayer("e", {
 			cost: new Decimal(200000),
 			effect() {
 				let eff = player.points.add(2);
-				eff = eff.pow(1/6);
+				eff = eff.log10().add(1).pow(1.15);
 				return eff;
 			},
 			effectDisplay() {

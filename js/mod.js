@@ -12,11 +12,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Genesis",
+	num: "0.0.1",
+	name: "Re-energized",
 }
 
-let changelog = `<h1>Changelog:</h1><br>
+let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.0.1</h3><br>
+		- Rebalanced progression of energy layer in preparation for next layer<br><br>
 	<h3>v0.0</h3><br>
 		- Initial commit.<br>
 		- Added energy layer (not yet fully balanced.)`
