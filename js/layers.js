@@ -6,6 +6,14 @@ function getEEff(id) {
 	return upgradeEffect("e",id);
 }
 
+function hasPUpg(id) {
+	return hasUpgrade("p",id);
+}
+
+function getPEff(id) {
+	return upgradeEffect("p",id);
+}
+
 addLayer("e", {
     name: "energy", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "E", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -26,6 +34,7 @@ addLayer("e", {
 		if (hasEUpg(14)) mult=mult.mul(getEEff(14));
 		if (hasEUpg(22)) mult=mult.mul(getEEff(22));
 		if (hasEUpg(24)) mult=mult.mul(getEEff(24));
+		if (hasPUpg(11)) mult=mult.mul(getPEff(11));
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -35,6 +44,14 @@ addLayer("e", {
     hotkeys: [
         {key: "e", description: "E: Reset for energy", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+	update(diff) {
+		if (hasMilestone("p",1)) generatePoints("e",diff);
+	},
+	doReset(resettingLayer) {
+		let keep = [];
+        if (hasMilestone("p", 0) && resettingLayer=="p") keep.push("upgrades")
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
 	upgrades: {
 		11: {
 			title: "Violate Thermodynamics",
@@ -93,7 +110,7 @@ addLayer("e", {
 		},
 		21: {
 			description: "Multiply aether gain based on current aether",
-			cost: new Decimal(100),
+			cost: new Decimal(75),
 			effect() {
 				let eff = player.points.add(2);
 				eff = eff.log10().add(1).pow(1.5);
@@ -109,7 +126,7 @@ addLayer("e", {
 		},
 		22: {
 			description: "Double base gain of energy",
-			cost: new Decimal(250),
+			cost: new Decimal(150),
 			effect() {
 				let eff = 2;
 				return eff;
@@ -140,7 +157,7 @@ addLayer("e", {
 		},
 		24: {
 			description: "Multiply energy gain based on current aether",
-			cost: new Decimal(200000),
+			cost: new Decimal(150000),
 			effect() {
 				let eff = player.points.add(2);
 				eff = eff.log10().add(1).pow(1.15);
@@ -157,4 +174,77 @@ addLayer("e", {
 		
 	},
     layerShown(){return true}
+})
+
+addLayer("p", {
+    name: "protons", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#5676f5",
+    requires: new Decimal(1e8), // Can be a function that takes requirement increases into account
+    resource: "protons", // Name of prestige currency
+    baseResource: "energy", // Name of resource prestige is based on
+    baseAmount() {return player.e.points}, // Get the current amount of baseResource
+    type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+	branches: ["e"],
+    exponent: 1.25, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+	effect() {
+		let eff = player.p.points.add(1);
+		let exp = 2;
+		eff = eff.pow(exp);
+		return eff;
+	},
+	effectDescription() {
+		let desc = "which are boosting aether gain by " + format(this.effect()) + "x";
+		return desc
+	},
+    row: 1, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "p", description: "P: Reset for protons", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+	update(diff) {
+		//if (hasMilestone("p",1) generatePoints("p",diff);
+	},
+	upgrades: {
+		11: {
+			description: "Muliply energy gain based on highest number of protons reached",
+			cost: new Decimal(3),
+			effect() {
+				let eff = player.p.best;
+				eff = eff.add(1).pow(0.35)
+			},
+			effectDisplay() {
+				let dis = format(getPEff(11)) + "x";
+				return dis;
+			},
+			unlocked() {
+				return player.p.best.gt(0);
+			}
+		}
+		
+	},
+	milestones: {
+        0: {
+            requirementDescription: "5 protons",
+            effectDescription: "Keep energy upgrades on proton reset.",
+            done() { return player.p.points.gte(5) }
+        },
+        1: {
+            requirementDescription: "12 protons",
+            effectDescription: "Gain 100% of energy gain per second.",
+            done() { return player.p.points.gte(12) }
+        }
+    },
+    layerShown(){return player.e.unlocked}
 })

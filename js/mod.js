@@ -12,11 +12,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0.1",
-	name: "Re-energized",
+	num: "0.1.0",
+	name: "Protonic",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.1.0</h3><br>
+		- Added proton layer - Barebones implementation, still not properly fleshed out.<br><br>
 	<h3>v0.0.1</h3><br>
 		- Rebalanced progression of energy layer in preparation for next layer<br><br>
 	<h3>v0.0</h3><br>
@@ -46,6 +48,8 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	
+	if (player.p.unlocked) gain = gain.mul(tmp.p.effect);
 	
 	if (hasEUpg(12)) gain = gain.mul(getEEff(12));
 	if (hasEUpg(13)) gain = gain.mul(getEEff(13));
