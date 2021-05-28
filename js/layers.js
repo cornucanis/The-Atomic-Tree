@@ -223,6 +223,7 @@ addLayer("p", {
 			effect() {
 				let eff = player.p.best;
 				eff = eff.add(1).pow(0.35)
+				return eff;
 			},
 			effectDisplay() {
 				let dis = format(getPEff(11)) + "x";
