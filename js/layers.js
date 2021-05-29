@@ -193,11 +193,12 @@ addLayer("p", {
 	branches: ["e"],
     exponent() {
 		let exp = new Decimal(1.75);
-		if (hasPUpg(14)) exp = exp.minus(getPEff(14)).max(1);
+		//if (hasPUpg(14)) exp = exp.minus(getPEff(14)).max(1);
 		return exp;
 	},
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+		if (hasPUpg(14)) mult = mult.div(getPEff(14));
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -275,7 +276,7 @@ addLayer("p", {
 			cost: new Decimal(8),
 			effect() {
 				let eff = player.points;
-				eff = eff.add(1).log10().pow(0.5).mul(0.015);
+				eff = eff.add(1).log10().add(1).pow(2.8);
 				return eff;
 			},
 			unlocked() {
