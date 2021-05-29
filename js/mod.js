@@ -12,11 +12,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.0",
-	name: "Protonic",
+	num: "0.1.1",
+	name: "Protonmore",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.1.1</h3><br>
+		- Added more to proton layer and did some balancing.<br>
+		* Current endgame: ~10 protons<br><br>
 	<h3>v0.1.0</h3><br>
 		- Added proton layer - Barebones implementation, still not properly fleshed out.<br><br>
 	<h3>v0.0.1</h3><br>
@@ -55,6 +58,7 @@ function getPointGen() {
 	if (hasEUpg(13)) gain = gain.mul(getEEff(13));
 	if (hasEUpg(21)) gain = gain.mul(getEEff(21));
 	if (hasEUpg(23)) gain = gain.mul(getEEff(23));
+	if (hasPUpg(13)) gain = gain.mul(getPEff(13));
 	return gain
 }
 
