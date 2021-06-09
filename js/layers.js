@@ -425,7 +425,7 @@ addLayer("p", {
 			effect() {
 				let eff = player.p.best;
 				let n13boost = hasNUpg(13) ? getNEff(13) : new Decimal(1);
-				eff=eff.add(1).mul(10).pow(3).mul(n13boost);
+				eff=eff.add(1).mul(5).pow(3).mul(n13boost);
 				return eff;
 			},
 			effectDisplay() {
