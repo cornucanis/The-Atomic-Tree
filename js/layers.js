@@ -19,6 +19,14 @@ function hasPUpg(id) {
 	return hasUpgrade("p",id);
 }
 
+function getNEff(id) {
+	return upgradeEffect("n",id);
+}
+
+function hasNUpg(id) {
+	return hasUpgrade("n",id);
+}
+
 function getPEff(id) {
 	return upgradeEffect("p",id);
 }
@@ -46,9 +54,11 @@ addLayer("e", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         let mult = new Decimal(1)
 		let elecEff = tmp.l.effect[0];
+		let neutEff = tmp.n.effect;
 		
 		//currency effects
 		if (elecEff && elecEff.gte(1)) mult = mult.mul(elecEff);
+		if (neutEff && neutEff.gte(1)) mult = mult.mul(neutEff);
 		
 		//upgrade effects
 		if (hasEUpg(14)) mult=mult.mul(getEEff(14));
@@ -57,6 +67,10 @@ addLayer("e", {
 		if (hasPUpg(11)) mult=mult.mul(getPEff(11));
 		if (hasEUpg(34)) mult=mult.mul(getEEff(34));
 		if (hasPUpg(22)) mult=mult.mul(getPEff(22));
+		
+		//buyables
+		if (getBuyableAmount("l", 22).gte(1)) mult = mult.mul(buyableEffect("l", 22));
+		
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -76,6 +90,7 @@ addLayer("e", {
 		let keep = [];
         if (hasMilestone("p", 0) && resettingLayer=="p") keep.push("upgrades")
         if (hasMilestone("l", 0) && resettingLayer=="l") keep.push("upgrades")
+        if (hasMilestone("n", 0) && resettingLayer=="n") keep.push("upgrades")
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
 	},
 	upgrades: {
@@ -155,15 +170,22 @@ addLayer("e", {
 			title: "Self Synergizing",
 			description: "Multiply aether gain based on current aether",
 			cost: new Decimal(75),
+			softcaps: [
+				[1e15, 0.25]
+			],
 			effect() {
 				let eff = player.points.add(2);
 				let e31boost = hasEUpg(31) ? getEEff(31) : new Decimal(1);
 				e31boost = e31boost.mul(1.5);
 				eff = eff.log10().add(1).pow(e31boost);
+				eff = softcapValue(eff, this.softcaps);
 				return eff;
 			},
 			effectDisplay() {
-				let dis = format(getEEff(this.id)) + "x";
+				let eff = getEEff(this.id);
+				let dis = format(eff) + "x";
+				if (this.softcaps && eff.gte(this.softcaps[0][0])) dis += "\n\
+				(softcapped)";
 				return dis;
 			},
 			unlocked() {
@@ -209,8 +231,10 @@ addLayer("e", {
 			description: "Multiply energy gain based on current aether",
 			cost: new Decimal(75000),
 			effect() {
+				let n11boost = hasNUpg(11) ? getNEff(11) : new Decimal(1);
 				let eff = player.points.add(2);
-				eff = eff.log10().add(1).pow(1.15);
+				let exp = n11boost.mul(1.15);
+				eff = eff.log10().add(1).pow(exp);
 				return eff;
 			},
 			effectDisplay() {
@@ -260,7 +284,8 @@ addLayer("e", {
 			cost: new Decimal(1e50),
 			effect() {
 				let eff = player.l.points.add(2);
-				eff = eff.log10().add(1).pow(3).mul(2000);
+				let n14boost = hasNUpg(14) ? getNEff(14) : new Decimal(1);
+				eff = eff.log10().add(1).mul(n14boost).pow(3).mul(2000);
 				return eff;
 			},
 			effectDisplay() {
@@ -372,14 +397,21 @@ addLayer("p", {
 			title: "Proton Power",
 			description: "Increase proton effect exponent based on current energy",
 			cost: new Decimal(4),
+			softcaps: [
+				[11, 0.25]
+			],
 			effect() {
 				let eff = player.e.points;
 				let p21boost = hasPUpg(21) ? getPEff(21) : 1;
 				eff = eff.add(1).log10().add(1).pow(0.5).div(3).mul(p21boost);
+				eff = softcapValue(eff, this.softcaps);
 				return eff;
 			},
 			effectDisplay() {
-				let dis = "+" + format(getPEff(this.id));
+				let eff = getPEff(this.id);
+				let dis = "+" + format(eff);
+				if (this.softcaps && eff.gte(this.softcaps[0][0])) dis += "\n\
+				(softcapped)"
 				return dis;
 			},
 			unlocked() {
@@ -392,7 +424,8 @@ addLayer("p", {
 			cost: new Decimal(6),
 			effect() {
 				let eff = player.p.best;
-				eff=eff.add(1).mul(10).pow(3);
+				let n13boost = hasNUpg(13) ? getNEff(13) : new Decimal(1);
+				eff=eff.add(1).mul(10).pow(3).mul(n13boost);
 				return eff;
 			},
 			effectDisplay() {
@@ -560,9 +593,10 @@ addLayer("l", {
     hotkeys: [
         {key: "l", description: "L: Reset for electrons", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-	update(diff) {
-		//if (!this.effectDescription && getBuyableAmount("l", 12).gte(1)) 
-			//this.effectDescription = this.effectDescriptionContents;
+	passiveGeneration() {
+		let gen = 0;
+		if (hasMilestone("n",2)) gen += 0.05;
+		return gen;
 	},
 	upgrades: {
 		
@@ -698,25 +732,25 @@ addLayer("l", {
 		22: {
 			title: "Protonical",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
-				let base = new Decimal(10000);
-				let growth = new Decimal(3);
-				let scale = new Decimal (1.1);
+				let base = new Decimal(1e25);
+				let growth = new Decimal(10);
+				let scale = new Decimal (1.5);
                 let cost = base.mul(Decimal.pow(growth, x.pow(scale)))
                 return cost.floor()
             },
 			effect() { // Effects of owning x of the items, x is a decimal
                 let x = getBuyableAmount(this.layer, this.id);
 				let exp = 1.05;
-                let base = new Decimal(1e15);
+                let base = new Decimal(100);
                 return Decimal.pow(base, x.pow(exp));
             },
 			display() { // Everything else displayed in the buyable button after the title
                 let extra = ""
                 if (player.tab != this.layer) return 
-                return "Divide proton cost.\n\
+                return "Multiply energy gain.\n\
 				Cost: " + format(tmp[this.layer].buyables[this.id].cost)+" electrons\n\
 				Amount: " + formatWhole(getBuyableAmount(this.layer, this.id)) + "\n\
-                Effect: /" + format(tmp[this.layer].buyables[this.id].effect) + extra
+                Effect: " + format(tmp[this.layer].buyables[this.id].effect) + "x" + extra
             },
             unlocked() { return hasMilestone("l",4) }, 
             canAfford() {
@@ -753,9 +787,9 @@ addLayer("l", {
             done() { return player.l.total.gte(5000) }
 		},
 		4: {
-			requirementDescription: "1e101 total electrons",
+			requirementDescription: "1e25 total electrons",
             effectDescription: "Unlock yet another electron buyable.",
-            done() { return player.l.total.gte(1e101) }
+            done() { return player.l.total.gte(1e25) }
 		},
     },
     layerShown(){return player.p.unlocked}
@@ -770,13 +804,13 @@ addLayer("n", {
 		points: new Decimal(0),
     }},
     color: "#7a8a72",
-    requires: new Decimal(5e104), // Can be a function that takes requirement increases into account
+    requires: new Decimal(1e105), // Can be a function that takes requirement increases into account
     resource: "neutrons", // Name of prestige currency
     baseResource: "energy", // Name of resource prestige is based on
     baseAmount() {return player.e.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 	branches: ["e"],
-    exponent: 0.75, // Prestige currency exponent
+    exponent: 1.4, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -792,11 +826,11 @@ addLayer("n", {
 	effect() {
 		let base = new Decimal(2);
 		let eff = player.n.points;
-		eff = base.pow(eff);
-		return eff;
+		eff = base.pow(eff).mul(3);
+		return player.n.points.gte(1) ? eff : new Decimal(1); // weird return structure because the last mul gives you a free boost otherwise
 	},
 	effectDescription() {
-		let desc = "which are boosting energy gain by " + format(this.effect());
+		let desc = "which are boosting energy gain by " + effectText(format(this.effect()), this.color) + "x";
 		return desc
 	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
@@ -804,25 +838,137 @@ addLayer("n", {
         {key: "n", description: "N: Reset for neutrons", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
 	upgrades: {
-		
-		
+		11: {
+			title: "Still Waiting Game",
+			description: "Multiplies the exponent of the <b>Waiting Game</b> effect based on best neutrons.",
+			cost: new Decimal(4),
+			effect() {
+				let eff = player.n.best.add(1);
+				eff = eff.log10().add(1).pow(0.6);
+				return eff;
+			},
+			effectDisplay() {
+				let dis = format(getNEff(this.id)) + "x";
+				return dis;
+			},
+			unlocked() {
+				return player.n.best.gte(1);
+			}
+		},
+		12: {
+			title: "Electroneutral",
+			description: "Multiplies electron gain based on best neutrons.",
+			cost: new Decimal(7),
+			effect() {
+				let eff = player.n.best.add(1);
+				eff = eff.add(1).pow(0.25).mul(3);
+				return eff;
+			},
+			effectDisplay() {
+				let dis = format(getNEff(this.id)) + "x";
+				return dis;
+			},
+			unlocked() {
+				return hasNUpg(11);
+			}
+		},
+		13: {
+			title: "Better Basic Backing",
+			description: "The effect of <b>Back to Basics<b> is multiplied based on current neutrons",
+			cost: new Decimal(10),
+			effect() {
+				let eff = player.n.points.add(1);
+				eff = eff.add(1).pow(2.5).mul(50);
+				return eff;
+			},
+			effectDisplay() {
+				let dis = format(getNEff(this.id)) + "x";
+				return dis;
+			},
+			unlocked() {
+				return hasNUpg(12);
+			}
+		},
+		14: {
+			title: "Do I smell softcaps?",
+			description: "Mutiply base of <b>Electrifaether</b> based on current neutrons.",
+			cost: new Decimal(37),
+			effect() {
+				let eff = getBuyableAmount("l", 12);
+				eff = eff.add(1).pow(1.5).mul(300);
+				return eff;
+			},
+			effectDisplay() {
+				let dis = format(getNEff(this.id)) + "x";
+				return dis;
+			},
+			unlocked() {
+				return hasNUpg(13);
+			}
+		}
 	},
 	milestones: {
         0: {
-            requirementDescription: "3 total neutrons",
+            requirementDescription: "3 neutrons",
             effectDescription: "Keep energy upgrades on reset.",
-            done() { return player.n.total.gte(3) }
+            done() { return player.n.best.gte(3) }
         },
 		1: {
-            requirementDescription: "8 total neutrons",
+            requirementDescription: "8 neutrons",
             effectDescription: "You can buy max neutrons.",
-            done() { return player.n.total.gte(8) }
+            done() { return player.n.best.gte(8) }
         },
         2: {
-            requirementDescription: "12 total neutrons",
+            requirementDescription: "15 neutrons",
             effectDescription: "Gain 5% of electron gain per second.",
-            done() { return player.n.total.gte(15) }
+            done() { return player.n.best.gte(15) }
         }
     },
     layerShown(){return player.l.unlocked}
+})
+
+addLayer("a", {
+    name: "atoms", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "A", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false,
+		points: new Decimal(0),
+    }},
+    color: "#75fff8",
+    requires: new Decimal(1e160), // Can be a function that takes requirement increases into account
+    resource: "atoms", // Name of prestige currency
+    baseResource: "energy", // Name of resource prestige is based on
+    baseAmount() {return player.e.points}, // Get the current amount of baseResource
+    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+	branches: ["p","n","l"],
+    exponent: 0.05, // Prestige currency exponent
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        mult = new Decimal(1)
+        return mult
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        return new Decimal(1)
+    },
+	effect() {
+		//let base = new Decimal(2);
+		//let eff = player.n.points;
+		//eff = base.pow(eff).mul(3);
+		//return player.n.points.gte(1) ? eff : new Decimal(1); // weird return structure because the last mul gives you a free boost otherwise
+	},
+	effectDescription() {
+		//let desc = "which are boosting energy gain by " + effectText(format(this.effect()), this.color) + "x";
+		//return desc
+	},
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "a", description: "A: Reset for atoms", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+	upgrades: {
+
+	},
+	milestones: {
+
+    },
+    layerShown(){return player.n.unlocked}
 })

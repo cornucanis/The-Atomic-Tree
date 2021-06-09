@@ -12,11 +12,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2.0",
-	name: "Electronica",
+	num: "0.3.0",
+	name: "Neutralized",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.3.0</h3><br>
+		- Rounded out neutron layer to prepare for next row.<br>
+		- Added in barebones for atom layer (NOT FULLY IMPLEMENTED OR WORKING YET.)<br>
+		- Softcapped some more early upgrades.<br>
+		* ENDGAME: Game should be balanced until reaching first atom reset.<br><br>
 	<h3>v0.2.0</h3><br>
 		- Added electron layer<br>
 		- Rebalanced early layers<br>
