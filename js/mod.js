@@ -7,19 +7,25 @@ let modInfo = {
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	
-	offlineLimit: 1,  // In hours
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1.1",
-	name: "Protonmore",
+	num: "0.1.2",
+	name: "Electronica",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.2.0</h3><br>
+		- Added electron layer<br>
+		- Rebalanced early layers<br>
+		- Softcapped a few upgrades<br>
+		- Added barebones for neutron layer (NOT FULLY IMPLEMENTED OR WORKING YET.)<br>
+		* ENDGAME: Game should be balanced until reaching neutrons<br><br>
 	<h3>v0.1.1</h3><br>
 		- Added more to proton layer and did some balancing.<br>
-		* Current endgame: ~10 protons<br><br>
+		* ENDGAME: Game should be balanced until ~10 protons<br><br>
 	<h3>v0.1.0</h3><br>
 		- Added proton layer - Barebones implementation, still not properly fleshed out.<br><br>
 	<h3>v0.0.1</h3><br>
@@ -51,14 +57,22 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	let elecEff = tmp.l.effect[1];
 	
+	//currency effects
 	if (player.p.unlocked) gain = gain.mul(tmp.p.effect);
+	if (elecEff && elecEff.gte(1)) gain = gain.mul(elecEff);
 	
+	//upgrades
 	if (hasEUpg(12)) gain = gain.mul(getEEff(12));
 	if (hasEUpg(13)) gain = gain.mul(getEEff(13));
 	if (hasEUpg(21)) gain = gain.mul(getEEff(21));
 	if (hasEUpg(23)) gain = gain.mul(getEEff(23));
 	if (hasPUpg(13)) gain = gain.mul(getPEff(13));
+	
+	//buyables
+	if (getBuyableAmount("l", 11).gte(1)) gain = gain.mul(buyableEffect("l", 11));
+	
 	return gain
 }
 
