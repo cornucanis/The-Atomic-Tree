@@ -27,11 +27,11 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br><br>
 	<h3>v0.4.0</h3><br>
-		- Tweaked unclassified atom effect
-		- Added early milestones to atomic layer in preparation for classification, the atomic layer's unique feature.
+		- Tweaked unclassified atom effect<br>
+		- Added early milestones to atomic layer in preparation for classification, the atomic layer's unique feature.<br>
 		* ENDGAME: Game should be balanced until ~20 atoms.<br><br>
 	<h3>v0.3.1</h3><br>
-		- Did a bit more balancing of the early game leading up to atomic reset.
+		- Did a bit more balancing of the early game leading up to atomic reset.<br>
 		* ENDGAME: Game should be balanced until reaching first atom reset.<br><br>
 	<h3>v0.3.0</h3><br>
 		- Rounded out neutron layer to prepare for next row.<br>
