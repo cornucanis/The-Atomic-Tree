@@ -7,13 +7,13 @@ addLayer("a", {
 		points: new Decimal(0),
     }},
     color: "#75fff8",
-    requires: new Decimal(1e160), // Can be a function that takes requirement increases into account
-    resource: "atoms", // Name of prestige currency
+    requires: new Decimal(1e175), // Can be a function that takes requirement increases into account
+    resource: "unclassified atoms", // Name of prestige currency
     baseResource: "energy", // Name of resource prestige is based on
     baseAmount() {return player.e.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 	branches: ["p","n","l"],
-    exponent: 0.05, // Prestige currency exponent
+    exponent: 0.002, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -22,14 +22,14 @@ addLayer("a", {
         return new Decimal(1)
     },
 	effect() {
-		//let base = new Decimal(2);
-		//let eff = player.n.points;
-		//eff = base.pow(eff).mul(3);
-		//return player.n.points.gte(1) ? eff : new Decimal(1); // weird return structure because the last mul gives you a free boost otherwise
+		let eff = player.a.points.add(1);
+		let exp = new Decimal(4);
+		eff = eff.pow(exp);
+		return eff;
 	},
 	effectDescription() {
-		//let desc = "which are boosting energy gain by " + effectText(format(this.effect()), this.color) + "x";
-		//return desc
+		let desc = "which are boosting aether gain by " + effectText(format(this.effect()), this.color) + "x";
+		return desc
 	},
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [

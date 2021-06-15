@@ -79,7 +79,7 @@ addLayer("n", {
 		13: {
 			title: "Better Basic Backing",
 			description: "The effect of <b>Back to Basics<b> is multiplied based on current neutrons",
-			cost: new Decimal(10),
+			cost: new Decimal(18),
 			effect() {
 				let eff = player.n.points.add(1);
 				eff = eff.add(1).pow(2.5).mul(50);
@@ -96,7 +96,7 @@ addLayer("n", {
 		14: {
 			title: "Do I smell softcaps?",
 			description: "Mutiply base of <b>Electrifaether</b> based on current neutrons.",
-			cost: new Decimal(37),
+			cost: new Decimal(45),
 			effect() {
 				let eff = getBuyableAmount("l", 12);
 				eff = eff.add(1).pow(1.5).mul(300);

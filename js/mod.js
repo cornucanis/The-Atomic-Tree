@@ -21,11 +21,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.0",
-	name: "Neutralized",
+	num: "0.3.1",
+	name: "Atomic Preperation",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.3.1</h3><br>
+		- Did a bit more balancing of the early game leading up to atomic reset.
+		* ENDGAME: Game should be balanced until reaching first atom reset.<br><br>
 	<h3>v0.3.0</h3><br>
 		- Rounded out neutron layer to prepare for next row.<br>
 		- Added in barebones for atom layer (NOT FULLY IMPLEMENTED OR WORKING YET.)<br>
@@ -72,10 +75,12 @@ function getPointGen() {
 
 	let gain = new Decimal(1)
 	let elecEff = tmp.l.effect[1];
+	let atomEff = tmp.a.effect;
 	
 	//currency effects
 	if (player.p.unlocked) gain = gain.mul(tmp.p.effect);
 	if (elecEff && elecEff.gte(1)) gain = gain.mul(elecEff);
+	if (atomEff && atomEff.gte(1)) gain = gain.mul(atomEff);
 	
 	//upgrades
 	if (hasEUpg(12)) gain = gain.mul(getEEff(12));
@@ -96,6 +101,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	"Current engdame: 1 atom"
 ]
 
 // Determines when the game "ends"

@@ -32,7 +32,7 @@ addLayer("l", {
 		if (getBuyableAmount("l", 12).gte(1)) {
 			eff[0] = eff[0].add(player.l.points);
 			let p24boost = hasPUpg(24) ? getPEff(24) : 1;
-			eff[0] = eff[0].pow(0.6).mul(p24boost).add(1);
+			eff[0] = eff[0].pow(0.6).mul(p24boost).mul(2).add(1);
 		}
 		if (getBuyableAmount("l", 12).gte(4)) {
 			eff[1] = eff[1].add(player.l.points);
@@ -194,7 +194,7 @@ addLayer("l", {
             }
         },
 		22: {
-			title: "Protonical",
+			title: "Supercharge",
 			cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
 				let base = new Decimal(1e25);
 				let growth = new Decimal(10);
