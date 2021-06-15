@@ -22,10 +22,14 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "0.3.1",
-	name: "Atomic Preperation",
+	name: "Atomling",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.4.0</h3><br>
+		- Tweaked unclassified atom effect
+		- Added early milestones to atomic layer in preparation for classification, the atomic layer's unique feature.
+		* ENDGAME: Game should be balanced until ~20 atoms.<br><br>
 	<h3>v0.3.1</h3><br>
 		- Did a bit more balancing of the early game leading up to atomic reset.
 		* ENDGAME: Game should be balanced until reaching first atom reset.<br><br>
@@ -101,7 +105,7 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	"Current engdame: 1 atom"
+	"Current engdame: ~20 atoms"
 ]
 
 // Determines when the game "ends"

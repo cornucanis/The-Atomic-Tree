@@ -47,6 +47,13 @@ addLayer("p", {
 		*/
 		return desc
 	},
+	doReset(resettingLayer) {
+		let keep = [];
+		let mstoneKeep = false;
+		mstoneKeep = mstoneKeep || (hasMilestone("a", 3) && resettingLayer=="a");
+		mstoneKeep && keep.push("milestones");
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for protons", onPress(){if (canReset(this.layer)) doReset(this.layer)}},

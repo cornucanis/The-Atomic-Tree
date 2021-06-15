@@ -6,7 +6,7 @@ addLayer("a", {
         unlocked: false,
 		points: new Decimal(0),
     }},
-    color: "#75fff8",
+    color: "#20b347",
     requires: new Decimal(1e175), // Can be a function that takes requirement increases into account
     resource: "unclassified atoms", // Name of prestige currency
     baseResource: "energy", // Name of resource prestige is based on
@@ -39,7 +39,32 @@ addLayer("a", {
 
 	},
 	milestones: {
-
+		0: {
+            requirementDescription: "1 atom",
+            effectDescription: "Gain 10% of electron gain per second.",
+            done() { return player.a.total.gte(1) }
+        },
+		1: {
+			requirementDescription: "2 total atoms",
+            effectDescription: "Keep energy upgrades on all resets.",
+            done() { return player.a.total.gte(2) }
+		},
+		2: {
+			requirementDescription: "4 total atoms",
+            effectDescription: "Keep electron milestones on atom reset.",
+            done() { return player.a.total.gte(4) }
+		},
+		3: {
+			requirementDescription: "7 total atoms",
+            effectDescription: "Keep all previous milestones on atom reset.",
+            done() { return player.a.total.gte(7) }
+		},
+		4: {
+			requirementDescription: "15 total atoms",
+            effectDescription: "Unlock atom classification.",
+            done() { return player.a.total.gte(15) }
+		}
+		
     },
     layerShown(){return player.n.unlocked}
 })

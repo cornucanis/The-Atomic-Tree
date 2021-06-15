@@ -53,6 +53,13 @@ addLayer("l", {
 		}
 		return desc;
 	},
+	doReset(resettingLayer) {
+		let keep = [];
+		let mstoneKeep = false;
+		mstoneKeep = mstoneKeep || (hasMilestone("a", 2) && resettingLayer=="a");
+		mstoneKeep && keep.push("milestones");
+        if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "l", description: "L: Reset for electrons", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -60,6 +67,7 @@ addLayer("l", {
 	passiveGeneration() {
 		let gen = 0;
 		if (hasMilestone("n",2)) gen += 0.05;
+		if (hasMilestone("a",0)) gen += 0.1;
 		return gen;
 	},
 	upgrades: {

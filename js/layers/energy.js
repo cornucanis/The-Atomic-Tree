@@ -50,9 +50,11 @@ addLayer("e", {
 	},
 	doReset(resettingLayer) {
 		let keep = [];
-        if (hasMilestone("p", 0) && resettingLayer=="p") keep.push("upgrades")
-        if (hasMilestone("l", 0) && resettingLayer=="l") keep.push("upgrades")
-        if (hasMilestone("n", 0) && resettingLayer=="n") keep.push("upgrades")
+		let upgKeep = hasMilestone("a",1);
+		upgKeep = upgKeep || (hasMilestone("p", 0) && resettingLayer=="p");
+		upgKeep = upgKeep || (hasMilestone("l", 0) && resettingLayer=="l");
+		upgKeep = upgKeep || (hasMilestone("n", 0) && resettingLayer=="n");
+		upgKeep && keep.push("upgrades");
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
 	},
 	upgrades: {
