@@ -3,7 +3,15 @@ let modInfo = {
 	id: "atomictree",
 	author: "cornucanis",
 	pointsName: "aether",
-	modFiles: ["layers.js", "tree.js"],
+	modFiles: [
+		"layers.js",
+		"tree.js",
+		"layers/energy.js",
+		"layers/protons.js",
+		"layers/electrons.js",
+		"layers/neutrons.js",
+		"layers/atoms.js"
+	],
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
