@@ -220,6 +220,13 @@ function loadVue() {
 		<button class="smallUpg can" v-bind:style="{'background-color': tmp[data[0]].color}" v-on:click="toggleAuto(data)">{{player[data[0]][data[1]]?"ON":"OFF"}}</button>
 		`
 	})
+	
+	Vue.component('toggle-text-mod', {
+		props: ['layer', 'data'],
+		template: `
+		<button class="smallUpg can" v-bind:style="{'background-color': tmp[data[0]].color}" v-on:click="toggleAuto(data)">{{player[data[0]][data[1]]?"Amt":"%"}}</button>
+		`
+	})
 
 	// data = function to return the text describing the reset before the amount gained (optional)
 	Vue.component('prestige-button', {
@@ -562,6 +569,14 @@ function loadVue() {
 		template: `
 			<input class="instant" :id="'input-' + layer + '-' + data" :value="player[layer][data].toString()" v-on:focus="focused(true)" v-on:blur="focused(false)"
 			v-on:change="player[layer][data] = toValue(document.getElementById('input-' + layer + '-' + data).value, player[layer][data])">
+		`
+	})
+	
+	Vue.component('text-input-unbound-variable', {
+		props: ['layer', 'data'],
+		template: `
+			<input class="instant" :id="'input-' + layer + '-' + data" :value="window[data].toString()" v-on:focus="focused(true)" v-on:blur="focused(false)"
+			v-on:change="window[data] = toValue(document.getElementById('input-' + layer + '-' + data).value, window[data])">
 		`
 	})
 

@@ -10,7 +10,8 @@ let modInfo = {
 		"layers/protons.js",
 		"layers/electrons.js",
 		"layers/neutrons.js",
-		"layers/atoms.js"
+		"layers/atoms.js",
+		"layers/elements.js"
 	],
 	discordName: "",
 	discordLink: "",
@@ -21,11 +22,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.0",
-	name: "Atomling",
+	num: "0.4.1",
+	name: "Classified",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.4.1</h3><br>
+		- Added in the periodic table and a lot of backend work for classification. Classification feature is still not fully implemented, so don't expect it to work yet. It's just something pretty to look at for now.<br>
+		* ENDGAME: Game should be balanced until ~20 atoms.<br><br>
 	<h3>v0.4.0</h3><br>
 		- Tweaked unclassified atom effect<br>
 		- Added early milestones to atomic layer in preparation for classification, the atomic layer's unique feature.<br>
