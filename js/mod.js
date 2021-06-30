@@ -29,7 +29,7 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br><br>
 	<h3>v0.5.1</h3><br>
-		- Quick fix for broken upgrade
+		- Quick fix for broken upgrade<br><br>
 	<h3>v0.5.0</h3><br>
 		- Sped up electron era.<br>
 		- Sped up electron era.<br>
