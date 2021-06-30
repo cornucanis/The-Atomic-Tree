@@ -269,7 +269,7 @@ addLayer("l", {
 		},
         2: {
             requirementDescription: "1000 total electrons",
-            effectDescription: "Gain 100% of pending energy gain per second.",
+            effectDescription: "Generate 100% of your pending energy gain per second.",
             done() { return player.l.total.gte(1e3) }
         },
 		3: {
