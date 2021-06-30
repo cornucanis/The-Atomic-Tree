@@ -165,7 +165,9 @@ addLayer("l", {
 					" + this.levelEffects[amt];
 				} else {
 					extra += "\n\
-					*ALL EFFECTS UNLOCKED*"
+					*ALL EFFECTS UNLOCKED*\n\
+					\n\
+					Some upgrades will still be boosted by this buyable's level."
 				}
                 if (player.tab != this.layer) return 
                 return "Unlocks various bonuses and upgrades.\n\
