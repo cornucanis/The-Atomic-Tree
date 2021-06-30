@@ -218,7 +218,7 @@ addLayer("r", {
 		resonance: {
 			title: "Resonance",
 			body() {
-				return "Your resons will passively produce resonance. Your resonance can then be assigned to one of various flavours. Each flavor provides a different effect. All unassigned resonance will be assigned when choosing a flavour."
+				return "Your resons will passively produce resonance. Your resonance can then be assigned to one of various flavours. Each flavour provides a different effect. All unassigned resonance will be assigned when choosing a flavour."
 			}
 		}
 	},
