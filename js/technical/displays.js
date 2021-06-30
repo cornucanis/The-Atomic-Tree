@@ -56,9 +56,10 @@ function updateWidth() {
 	if (player.navTab == "none") splitScreen = true
 	tmp.other.screenWidth = screenWidth
 	tmp.other.screenHeight = window.innerHeight
-
+	splitScreen = splitScreen && !(isAtomTab() && player.forceSingleAtomTab); // modification to force single tab
 	tmp.other.splitScreen = splitScreen
 	tmp.other.lastPoints = player.points
+	drawTree()
 }
 
 function updateOomps(diff)

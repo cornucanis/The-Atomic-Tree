@@ -6,6 +6,8 @@ addLayer("l", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
+		total: new Decimal(0),
+		best: new Decimal(0)
     }},
     color: "#c70e0e",
     requires: new Decimal(1e16), // Can be a function that takes requirement increases into account
@@ -17,8 +19,16 @@ addLayer("l", {
     exponent: 0.2, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+		let r12boost = buyableEffect("r", 12);
 		
+		//upgrades
 		if (hasNUpg(12)) mult=mult.mul(getNEff(12));
+		
+		//buyables
+		if (r12boost.gte(1)) mult=mult.mul(r12boost);
+		
+		//element boosts
+		if (getElementCount(118).gte(1)) mult = mult.mul(gridEffect("a",118));
 		
         return mult
     },
@@ -32,7 +42,7 @@ addLayer("l", {
 		if (getBuyableAmount("l", 12).gte(1)) {
 			eff[0] = eff[0].add(player.l.points);
 			let p24boost = hasPUpg(24) ? getPEff(24) : 1;
-			eff[0] = eff[0].pow(0.6).mul(p24boost).mul(2).add(1);
+			eff[0] = eff[0].pow(0.6).mul(p24boost).mul(4).add(1);
 		}
 		if (getBuyableAmount("l", 12).gte(4)) {
 			eff[1] = eff[1].add(player.l.points);
@@ -56,8 +66,16 @@ addLayer("l", {
 	doReset(resettingLayer) {
 		let keep = [];
 		let mstoneKeep = false;
+		let upgKeep = false;
+		
 		mstoneKeep = mstoneKeep || (hasMilestone("a", 2) && resettingLayer=="a");
+		mstoneKeep = mstoneKeep || (hasMilestone("r", 0) && resettingLayer=="r");
 		mstoneKeep && keep.push("milestones");
+		
+		upgKeep = upgKeep || (hasMilestone("a", 4) && resettingLayer=="a");
+		upgKeep = upgKeep || (hasMilestone("r", 1) && resettingLayer=="r");
+		upgKeep && keep.push("upgrades");
+		
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
 	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
@@ -68,6 +86,7 @@ addLayer("l", {
 		let gen = 0;
 		if (hasMilestone("n",2)) gen += 0.05;
 		if (hasMilestone("a",0)) gen += 0.1;
+		if (hasMilestone("r",3)) gen += 1;
 		return gen;
 	},
 	upgrades: {

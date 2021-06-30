@@ -5,6 +5,8 @@ addLayer("e", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+		total: new Decimal(0),
+		best: new Decimal(0)
     }},
     color: "#d7de04",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
@@ -33,6 +35,9 @@ addLayer("e", {
 		//buyables
 		if (getBuyableAmount("l", 22).gte(1)) mult = mult.mul(buyableEffect("l", 22));
 		
+		//element boosts
+		if (getElementCount(101).gte(1)) mult = mult.mul(gridEffect("a",101));
+		
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -54,6 +59,7 @@ addLayer("e", {
 		upgKeep = upgKeep || (hasMilestone("p", 0) && resettingLayer=="p");
 		upgKeep = upgKeep || (hasMilestone("l", 0) && resettingLayer=="l");
 		upgKeep = upgKeep || (hasMilestone("n", 0) && resettingLayer=="n");
+		upgKeep = upgKeep || (hasMilestone("r", 1) && resettingLayer=="r");
 		upgKeep && keep.push("upgrades");
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
 	},
@@ -223,7 +229,7 @@ addLayer("e", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(2);
+				return getBuyableAmount("l", 12).gte(2) || hasMilestone("a",4);
 			}			
 		},
 		32: {
@@ -239,7 +245,7 @@ addLayer("e", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(2);
+				return getBuyableAmount("l", 12).gte(2) || hasMilestone("a",4);
 			}			
 		},
 		33: {
@@ -257,7 +263,7 @@ addLayer("e", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(2);
+				return getBuyableAmount("l", 12).gte(2) || hasMilestone("a",4);
 			}			
 		},
 		34: {
@@ -274,7 +280,7 @@ addLayer("e", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(2);
+				return getBuyableAmount("l", 12).gte(2) || hasMilestone("a",4);
 			}			
 		}
 	},

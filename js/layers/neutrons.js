@@ -6,6 +6,9 @@ addLayer("n", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
+		total: new Decimal(0),
+		best: new Decimal(0),
+		autoEnabled: true
     }},
     color: "#7a8a72",
     requires: new Decimal(1e105), // Can be a function that takes requirement increases into account
@@ -17,6 +20,8 @@ addLayer("n", {
     exponent: 1.4, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+		let r13boost = buyableEffect("r", 13);
+		if (r13boost.gt(1)) mult = mult.div(r13boost);
         return mult
     },
 	canBuyMax() {
@@ -40,9 +45,23 @@ addLayer("n", {
 	doReset(resettingLayer) {
 		let keep = [];
 		let mstoneKeep = false;
-		mstoneKeep = mstoneKeep || (hasMilestone("a", 3) && resettingLayer=="a");
+		let upgKeep = false;
+		
+		mstoneKeep = mstoneKeep || (hasMilestone("a", 2) && resettingLayer=="a");
+		mstoneKeep = mstoneKeep || (hasMilestone("r", 0) && resettingLayer=="r");
 		mstoneKeep && keep.push("milestones");
+		
+		upgKeep = upgKeep || (hasMilestone("a", 4) && resettingLayer=="a");
+		upgKeep = upgKeep || (hasMilestone("r", 1) && resettingLayer=="r");
+		upgKeep && keep.push("upgrades");
+		
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
+	autoPrestige() {
+		return hasMilestone("a",5) && player[this.layer].autoEnabled;
+	},
+	resetsNothing() {
+		return hasMilestone("r",2);
 	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -63,7 +82,7 @@ addLayer("n", {
 				return dis;
 			},
 			unlocked() {
-				return player.n.best.gte(1);
+				return player.n.best.gte(1) || hasMilestone("a",4);
 			}
 		},
 		12: {
@@ -80,12 +99,12 @@ addLayer("n", {
 				return dis;
 			},
 			unlocked() {
-				return hasNUpg(11);
+				return hasNUpg(11) || hasMilestone("a",4);
 			}
 		},
 		13: {
 			title: "Better Basic Backing",
-			description: "The effect of <b>Back to Basics<b> is multiplied based on current neutrons",
+			description: "The effect of <b>Back to Basics</b> is multiplied based on current neutrons",
 			cost: new Decimal(18),
 			effect() {
 				let eff = player.n.points.add(1);
@@ -97,7 +116,7 @@ addLayer("n", {
 				return dis;
 			},
 			unlocked() {
-				return hasNUpg(12);
+				return hasNUpg(12) || hasMilestone("a",4);
 			}
 		},
 		14: {
@@ -114,7 +133,7 @@ addLayer("n", {
 				return dis;
 			},
 			unlocked() {
-				return hasNUpg(13);
+				return hasNUpg(13) || hasMilestone("a",4);
 			}
 		}
 	},

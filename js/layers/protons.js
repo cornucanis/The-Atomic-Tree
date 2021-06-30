@@ -5,6 +5,9 @@ addLayer("p", {
     startData() { return {
         unlocked: false,
 		points: new Decimal(0),
+		total: new Decimal(0),
+		best: new Decimal(0),
+		autoEnabled: true
     }},
     color: "#5676f5",
     requires: new Decimal(1e7), // Can be a function that takes requirement increases into account
@@ -26,8 +29,10 @@ addLayer("p", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         let mult = new Decimal(1)
 		let l21boost = buyableEffect("l", 21);
+		let r11boost = buyableEffect("r", 11);
 		if (hasPUpg(14)) mult = mult.div(getPEff(14));
 		if (l21boost.gt(1)) mult = mult.div(l21boost);
+		if (r11boost.gt(1)) mult = mult.div(r11boost);
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -50,9 +55,23 @@ addLayer("p", {
 	doReset(resettingLayer) {
 		let keep = [];
 		let mstoneKeep = false;
-		mstoneKeep = mstoneKeep || (hasMilestone("a", 3) && resettingLayer=="a");
+		let upgKeep = false;
+		
+		mstoneKeep = mstoneKeep || (hasMilestone("a", 2) && resettingLayer=="a");
+		mstoneKeep = mstoneKeep || (hasMilestone("r", 0) && resettingLayer=="r");
 		mstoneKeep && keep.push("milestones");
+		
+		upgKeep = upgKeep || (hasMilestone("a", 4) && resettingLayer=="a");
+		upgKeep = upgKeep || (hasMilestone("r", 1) && resettingLayer=="r");
+		upgKeep && keep.push("upgrades");
+		
         if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
+	autoPrestige() {
+		return hasMilestone("a",5) && player[this.layer].autoEnabled;
+	},
+	resetsNothing() {
+		return hasMilestone("r",2);
 	},
     row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
@@ -103,7 +122,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return hasPUpg(11);
+				return hasPUpg(11) || hasMilestone("a",4);
 			}
 		},
 		13: {
@@ -121,7 +140,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return hasPUpg(12);
+				return hasPUpg(12) || hasMilestone("a",4);
 			}
 		},
 		14: {
@@ -134,7 +153,7 @@ addLayer("p", {
 				return eff;
 			},
 			unlocked() {
-				return hasPUpg(13);
+				return hasPUpg(13) || hasMilestone("a",4);
 			}
 		},
 		21: {
@@ -151,7 +170,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(3);
+				return getBuyableAmount("l", 12).gte(3) || hasMilestone("a",4);
 			}
 		},
 		22: {
@@ -168,7 +187,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(3);
+				return getBuyableAmount("l", 12).gte(3) || hasMilestone("a",4);
 			}
 		},
 		23: {
@@ -185,7 +204,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(3);
+				return getBuyableAmount("l", 12).gte(3) || hasMilestone("a",4);
 			}
 		},
 		24: {
@@ -202,7 +221,7 @@ addLayer("p", {
 				return dis;
 			},
 			unlocked() {
-				return getBuyableAmount("l", 12).gte(3);
+				return getBuyableAmount("l", 12).gte(3) || hasMilestone("a",4);
 			}
 		}
 	},

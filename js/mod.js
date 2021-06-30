@@ -10,8 +10,9 @@ let modInfo = {
 		"layers/protons.js",
 		"layers/electrons.js",
 		"layers/neutrons.js",
+		"layers/elements.js",
 		"layers/atoms.js",
-		"layers/elements.js"
+		"layers/resons.js"
 	],
 	discordName: "",
 	discordLink: "",
@@ -22,11 +23,17 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.4.1",
-	name: "Classified",
+	num: "0.5.0",
+	name: "Resonate",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.5.0</h3><br>
+		- Sped up electron era.<br>
+		- Implemented atom classification fully.<br>
+		- What, you want more? That classification algorithm was a huge pain to make work properly and efficiently.<br>
+		- Fine, have another layer. Let there be resons! <br>
+		* ENDGAME: Game should be balanced until ~2 resons.<br><br>
 	<h3>v0.4.1</h3><br>
 		- Added in the periodic table and a lot of backend work for classification. Classification feature is still not fully implemented, so don't expect it to work yet. It's just something pretty to look at for now.<br>
 		* ENDGAME: Game should be balanced until ~20 atoms.<br><br>
@@ -105,11 +112,12 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	forceSingleAtomTab:true
 }}
 
 // Display extra things at the top of the page
 var displayThings = [
-	"Current engdame: ~20 atoms"
+	"Current engdame: ~2 resons"
 ]
 
 // Determines when the game "ends"

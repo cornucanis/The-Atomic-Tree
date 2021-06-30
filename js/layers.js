@@ -1,6 +1,6 @@
 // softcaps a decimal value based on a softcap data array. First item in the array is the threshold, second item is the dampening effect
 function softcapValue(value, sc) {
-	for (i = 0; i < sc.length; i++) {
+	for (let i = 0; i < sc.length; i++) {
 		let cap = sc[i];
 		if (value.gte(cap[0])) value = value.div(cap[0]).pow(cap[1]).mul(cap[0]);
 	}
