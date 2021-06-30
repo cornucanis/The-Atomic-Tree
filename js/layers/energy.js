@@ -255,7 +255,7 @@ addLayer("e", {
 			effect() {
 				let eff = player.l.points.add(2);
 				let n14boost = hasNUpg(14) ? getNEff(14) : new Decimal(1);
-				eff = eff.log10().add(1).mul(n14boost).pow(3).mul(2000);
+				eff = eff.log10().add(1).mul(n14boost).pow(2).mul(2000);
 				return eff;
 			},
 			effectDisplay() {

@@ -18,7 +18,7 @@ addLayer("a", {
 		bucketProbabilities:new Array(Object.keys(elementData).length).fill(new Decimal(0)) //probability for each bucket of choosing alias
     }},
     color: "#20b347",
-    requires: new Decimal(1e175), // Can be a function that takes requirement increases into account
+    requires: new Decimal(1e190), // Can be a function that takes requirement increases into account
     resource: "unclassified atoms", // Name of prestige currency
     baseResource: "energy", // Name of resource prestige is based on
     baseAmount() {return player.e.points}, // Get the current amount of baseResource

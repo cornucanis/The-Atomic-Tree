@@ -23,12 +23,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5.0",
+	num: "0.5.1",
 	name: "Resonate",
 }
 
 let changelog = `<h1>Changelog:</h1><br><br>
+	<h3>v0.5.1</h3><br>
+		- Quick fix for broken upgrade
 	<h3>v0.5.0</h3><br>
+		- Sped up electron era.<br>
 		- Sped up electron era.<br>
 		- Implemented atom classification fully.<br>
 		- What, you want more? That classification algorithm was a huge pain to make work properly and efficiently.<br>
@@ -102,6 +105,7 @@ function getPointGen() {
 	if (hasEUpg(13)) gain = gain.mul(getEEff(13));
 	if (hasEUpg(21)) gain = gain.mul(getEEff(21));
 	if (hasEUpg(23)) gain = gain.mul(getEEff(23));
+	if (hasEUpg(33)) gain = gain.mul(getEEff(33));
 	if (hasPUpg(13)) gain = gain.mul(getPEff(13));
 	
 	//buyables
