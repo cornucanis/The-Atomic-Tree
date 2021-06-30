@@ -179,7 +179,7 @@ addLayer("a", {
 	milestones: {
 		0: {
             requirementDescription: "1 atom",
-            effectDescription: "Gain 10% of electron gain per second.",
+            effectDescription: "Gain 10% of pending electron gain per second.",
             done() { return player.a.total.gte(1) }
         },
 		1: {

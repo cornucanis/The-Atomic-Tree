@@ -270,7 +270,7 @@ addLayer("r", {
         },
         3: {
             requirementDescription: "8 total resons",
-            effectDescription: "Gain 100% of electron gain per second.",
+            effectDescription: "Gain 100% of pending electron gain per second.",
             done() { return player.r.total.gte(8) }
         }
     },

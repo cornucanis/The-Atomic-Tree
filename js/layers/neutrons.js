@@ -150,7 +150,7 @@ addLayer("n", {
         },
         2: {
             requirementDescription: "15 neutrons",
-            effectDescription: "Gain 5% of electron gain per second.",
+            effectDescription: "Gain 5% of pending electron gain per second.",
             done() { return player.n.best.gte(15) }
         }
     },
