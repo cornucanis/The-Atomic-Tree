@@ -204,7 +204,7 @@ addLayer("c", {
             },
         },
         doReset(resettingLayer){ // Triggers when this layer is being reset, along with the layer doing the resetting. Not triggered by lower layers resetting, but is by layers on the same row.
-            if(layers[resettingLayer].row > this.row) layerDataReset(this.layer, ["points"]) // This is actually the default behavior
+            if(layers[resettingLayer].row > this.row) layerDataReset(this.layer, ["points"]) 
         },
         layerShown() {return true}, // Condition for when layer appears on the tree
         automate() {
@@ -364,7 +364,8 @@ addLayer("c", {
         }},
         nodeStyle() {return { // Style on the layer node
             'color': '#3325CC',
-            'text-decoration': 'underline' 
+            'text-decoration': 'underline',
+            'font-family': 'cursive'
         }},
         glowColor: "orange", // If the node is highlighted, it will be this color (default is red)
         componentStyles: {
